@@ -1,5 +1,5 @@
 [project]
-name = "agent2agent"
+name = "a2a"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -11,6 +11,5 @@ dependencies = [
     "litellm>=1.83.4",
     "pypdf>=6.10.0",
     "uvicorn>=0.44.0",
-    "python-a2a>=0.5.10",
-    "a2a-sdk==0.2.5",
+    "qrcode>=8.2",
 ]

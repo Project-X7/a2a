@@ -15,7 +15,7 @@ from a2a.types import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-BASE_URL = "http://localhost:9999"
+BASE_URL = "http://localhost:8080"
 
 
 async def main() -> None:
@@ -34,7 +34,7 @@ async def main() -> None:
         payload: dict[str, Any] = {
             "message": {
                 "role": "user",
-                "parts": [{"kind": "text", "text": "What does my policy cover?"}],
+                "parts": [{"kind": "text", "text": "What can you do?"}],
                 "messageId": uuid4().hex,
             }
         }

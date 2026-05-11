@@ -8,9 +8,32 @@ from pathlib import Path
 import base64
 import pypdf
 import re
-
+import logging
+import warnings
+from dotenv import load_dotenv
+from google.auth import impersonated_credentials
+from google.oauth2 import service_account
 
 console = Console()
+
+### Environment setup
+def setup_env() -> None:
+    """Initializes the environment by loading .env and applying nest_asyncio."""
+    load_dotenv(override=True)
+    nest_asyncio.apply()
+
+    warnings.filterwarnings("ignore", category=UserWarning)
+    warnings.filterwarnings("ignore", category=FutureWarning)
+
+### Output formatting helpers
+
+def display_markdown(text: str):
+    console.print(Markdown(text))
+
+def mute_logs():
+    logging.disable(level=logging.WARNING)
+    warnings.filterwarnings("ignore")
+
 
 def format_llm_response(text: str) -> str:
     """formats llms response for clean terminal display"""
@@ -88,6 +111,8 @@ def print_llm_response(text: str, title: str = None) -> None:
     print(format_llm_response(text))
     print()
 
+### File handling helpers
+
 def encode_file_to_base64(file_path: str) -> str:
     """This function takes a file path as an input and returns base64 encoded strings of the file content(LLMs which support native pdf formats)"""
     with Path(file_path).open("rb") as file:
@@ -98,14 +123,7 @@ def pdf_to_text(file_path: str) -> str:
         reader = pypdf.PdfReader(file)
         return "\n".join(page.extract_text() for page in reader.pages)
 
-def setup_env() -> None:
-    """Initializes the environment by loading .env and applying nest_asyncio."""
-    load_dotenv(override=True)
-    nest_asyncio.apply()
-
-    warnings.filterwarnings("ignore", category=UserWarning)
-    warnings.filterwarnings("ignore", category=FutureWarning)
-
+### A2A helpers
 
 def display_agent_card(agent_card: AgentCard) -> None:
     """Nicely formats and displays an AgentCard."""
@@ -148,3 +166,6 @@ def display_agent_card(agent_card: AgentCard) -> None:
     # Join all parts and display
     # display(Markdown("\n".join(md_parts)))
     console.print(Markdown("\n".join(md_parts)))
+
+
+

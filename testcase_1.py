@@ -1,4 +1,4 @@
-from policy_agent import PolicyAgent
+from agents import PolicyAgent
 from helpers import print_llm_response, format_llm_response
 
 print("Running Health Insurance Policy Agent")

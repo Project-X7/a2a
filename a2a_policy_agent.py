@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 import os
 import uvicorn
-
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.events import EventQueue
@@ -11,11 +10,11 @@ from a2a.types import (
     AgentCapabilities,
     AgentCard,
     AgentSkill,
+
 )
 from a2a.utils import new_agent_text_message
-
-from agents import PolicyAgent
-
+from policy_agent import PolicyAgent
+#from a2a.server.routes import create_agent_card_routes, create_jsonrpc_routes
 
 class PolicyAgentExecutor(AgentExecutor):
     def __init__(self) -> None:
@@ -55,11 +54,20 @@ def main() -> None:
     agent_card = AgentCard(
         name="InsurancePolicyCoverageAgent",
         description="Provides information about insurance policy coverage options and details.",
-        url=f"http://{HOST}:{PORT}/",
+        url=f"http://{HOST}:{PORT}",
+        # supported_interfaces=[
+        # AgentInterface(
+        #     protocol_binding = 'JSONRPC',
+        #     url=f"http://{HOST}:{PORT}",
+        # ),],
         version="1.0.0",
-        defaultInputModes=["text"],
-        defaultOutputModes=["text"],
-        capabilities=AgentCapabilities(streaming=False),
+        default_input_modes=['text/plain'],
+        default_output_modes=['text/plain'],
+        capabilities=AgentCapabilities(
+            input_modes=['text/plain'],
+            output_modes=['text/plain'],
+            streaming=True,
+        ),
         skills=[skill],
     )
 
@@ -73,8 +81,17 @@ def main() -> None:
         http_handler=request_handler,
     )
 
-    uvicorn.run(server.build(), host=HOST, port=PORT)
+    # Define routes for transports as defined in the AgentCard
+    # routes = []
 
+    # routes.extend(create_agent_card_routes(agent_card))
+    # routes.extend(create_jsonrpc_routes(request_handler, rpc_url='/api/v1/jsonrpc/'))
+
+    # from starlette.applications import Starlette
+    # app = Starlette(routes=routes)
+
+
+    uvicorn.run(server.build(), host=HOST, port=PORT)
     
 if __name__ == '__main__':
     main()
